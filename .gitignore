@@ -4,3 +4,5 @@ dist/
 .DS_Store
 coverage/
 *.log
+skills-lock.json
+.agents

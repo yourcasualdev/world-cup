@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --color-pitch-black: #050505;
+  --color-pitch-black-light: #111111;
+  --color-stark-white: #f8f9fa;
+  --color-neon-green: #ccff00;
+  --color-electric-blue: #0044ff;
+  --color-deep-purple: #7000ff;
+
+  --font-display: var(--font-anton), "Impact", sans-serif;
+  --font-body: var(--font-plus-jakarta), "Helvetica Neue", sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-pitch-black);
+    color: var(--color-stark-white);
+  }
+}
+
+@layer utilities {
+  .noise-bg {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  .mesh-gradient {
+    background: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.2) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.2) 0, transparent 50%);
+  }
+}
