@@ -17,45 +17,55 @@ const headers = { 'x-apisports-key': key };
  * Note: Using 2022 season for WC as 2026 squads might not be available yet.
  */
 export async function syncSquads() {
-  console.log('🔄 SnycSquads: Kadrolar çekiliyor...');
+  console.log('🔄 SnycSquads: Kadrolar çekiliyor (TLA Kök Çözümü Aktif)...');
   
-  // 1. Önce api-football tarafındaki turnuva takımlarını alalım (Takım ID'lerini eşleştirmek için)
-  // World Cup id'si 1'dir.
-  const teamsRes = await fetch(`${API_SPORTS_URL}/teams?league=1&season=2022`, { headers });
-  const teamsData = await teamsRes.json();
-  
-  if (!teamsData.response) {
-    console.error('Failed to fetch teams from api-football:', teamsData.errors);
-    return;
-  }
-
-  const apiFootballTeams = teamsData.response.map((t: any) => t.team);
-  
-  // DB'deki kendi takımlarımız
   const dbTeams = await prisma.team.findMany();
-
   let processedCount = 0;
 
   for (const dbTeam of dbTeams) {
-    // İsimleri eşleştir (örn: "England" == "England")
-    // Bazı istisnai isimler için manual mapping gerekebilir ama genelde %90 aynıdır.
-    let matchedApiTeam = apiFootballTeams.find((t: any) => 
-      t.name.toLowerCase() === dbTeam.name.toLowerCase()
-    );
+    let matchedApiTeam = null;
 
-    // Exception cases handling (e.g. "USA" vs "USA", "South Korea" vs "Korea Republic")
+    // 1. KÖKTEN ÇÖZÜM: Takımın uluslararası TLA kodunu kullanarak API-Football'da ara.
+    // TLA (Örn: TUR, ARG, BRA, FRA) FIFA standardı olduğu için her zaman en doğru sonucu verir.
+    if (dbTeam.tla) {
+      const codeRes = await fetch(`${API_SPORTS_URL}/teams?code=${dbTeam.tla}`, { headers });
+      const codeData = await codeRes.json();
+      
+      if (codeData.response && codeData.response.length > 0) {
+        // API bazen aynı koda sahip birden fazla milli takım (Örn: TUR -> Türkiye, Turkmenistan) döndürebilir.
+        // Bu yüzden "national: true" olan ve ismi bizim veritabanındaki takım ismine benzeyen ilk takımı alıyoruz.
+        matchedApiTeam = codeData.response.find((t: any) => 
+          t.team.national === true && 
+          (t.team.name.toLowerCase().includes(dbTeam.name.toLowerCase().substring(0,4)) || 
+           dbTeam.name.toLowerCase().includes(t.team.name.toLowerCase().substring(0,4)) ||
+           t.team.country.toLowerCase() === dbTeam.name.toLowerCase())
+        )?.team;
+
+        // İsim benzerliği ile bulamazsak (Örn: USA vs United States), sadece national: true olan ilk takımı al.
+        if (!matchedApiTeam) {
+          matchedApiTeam = codeData.response.find((t: any) => t.team.national === true)?.team;
+        }
+      }
+    }
+
+    // 2. FALLBACK (Nadir Durumlar İçin): Eğer TLA koduyla bulunamazsa direkt isimle arama yap.
     if (!matchedApiTeam) {
-      if (dbTeam.name === 'South Korea') matchedApiTeam = apiFootballTeams.find((t: any) => t.name === 'Korea Republic');
-      if (dbTeam.name === 'USA') matchedApiTeam = apiFootballTeams.find((t: any) => t.name === 'USA');
-      if (dbTeam.name === 'Iran') matchedApiTeam = apiFootballTeams.find((t: any) => t.name.includes('Iran'));
+      console.log(`🔍 TLA kodu (${dbTeam.tla}) ile bulunamadı, isimle aranıyor: ${dbTeam.name}`);
+      const searchRes = await fetch(`${API_SPORTS_URL}/teams?search=${dbTeam.name}`, { headers });
+      const searchData = await searchRes.json();
+      
+      if (searchData.response && searchData.response.length > 0) {
+        matchedApiTeam = searchData.response.find((t: any) => t.team.national === true)?.team;
+        if (!matchedApiTeam) matchedApiTeam = searchData.response[0].team;
+      }
     }
 
     if (!matchedApiTeam) {
-      console.log(`⚠️ Eşleşme bulunamadı: ${dbTeam.name}`);
+      console.log(`⚠️ Eşleşme hiçbir şekilde bulunamadı: ${dbTeam.name} (${dbTeam.tla})`);
       continue;
     }
 
-    console.log(`📡 Kadro çekiliyor: ${dbTeam.name} (ID: ${matchedApiTeam.id})`);
+    console.log(`📡 Kadro çekiliyor: ${dbTeam.name} -> Eşleştiği API Takımı: ${matchedApiTeam.name} (ID: ${matchedApiTeam.id})`);
     
     // API-Football'dan kadroyu çek
     const squadRes = await fetch(`${API_SPORTS_URL}/players/squads?team=${matchedApiTeam.id}`, { headers });
