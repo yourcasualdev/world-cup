@@ -11,7 +11,11 @@ const app: Express = express();
 const port = process.env.PORT || 8080;
 const prisma = new PrismaClient();
 
-app.use(cors());
+app.use(cors({
+  origin: ['https://worldcup.yourcasual.dev', 'https://api-worldcup.yourcasual.dev'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+}));
 app.use(express.json());
 
 // Arka plan işlerini (Cron Jobs) başlat
