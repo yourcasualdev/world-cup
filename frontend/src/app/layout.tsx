@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 };
 
 import MobileNav from "@/components/navigation/MobileNav";
+import Navbar from "@/components/navigation/Navbar";
 
 export default function RootLayout({
   children,
@@ -34,6 +35,7 @@ export default function RootLayout({
         className={`${anton.variable} ${plusJakarta.variable} antialiased bg-pitch-black text-stark-white font-body selection:bg-neon-green selection:text-pitch-black overflow-x-hidden`}
       >
         <div className="noise-bg pointer-events-none fixed inset-0 z-50 opacity-20 mix-blend-overlay"></div>
+        <Navbar />
         {children}
         <MobileNav />
       </body>
