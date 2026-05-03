@@ -8,6 +8,7 @@ const navItems = [
   { name: "Matches", href: "/" },
   { name: "Standings", href: "/standings" },
   { name: "Bracket", href: "/bracket" },
+  { name: "Teams", href: "/teams" },
 ];
 
 export default function Navbar() {

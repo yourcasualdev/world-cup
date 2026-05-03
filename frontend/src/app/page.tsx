@@ -45,10 +45,10 @@ export default function Home() {
   const filteredMatches = useMemo(() => {
     return matches.filter((m: any) => {
       const nameMatch = 
-        m.homeTeam.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        m.awayTeam.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        m.homeTeam.tla.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        m.awayTeam.tla.toLowerCase().includes(searchTerm.toLowerCase());
+        m.homeTeam?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        m.awayTeam?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        m.homeTeam?.tla?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        m.awayTeam?.tla?.toLowerCase().includes(searchTerm.toLowerCase());
       
       const statusMatch = filterStatus === "ALL" || m.status === filterStatus;
       
@@ -68,47 +68,40 @@ export default function Home() {
   const sortedDates = Object.keys(groupedMatches).sort();
 
   return (
-    <main className="min-h-screen pt-24 pb-48 px-6 md:px-12 lg:px-24 max-w-[1920px] mx-auto overflow-hidden">
+    <main className="min-h-screen pt-20 pb-36 px-4 sm:px-6 md:px-12 lg:px-24 max-w-[1920px] mx-auto overflow-x-hidden">
       {/* Hero Header */}
-      <header className="mb-24 flex flex-col gap-8 md:flex-row md:items-end justify-between relative z-10">
-        <div className="flex flex-col">
-          <motion.h1 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="font-display text-7xl md:text-9xl lg:text-[12rem] leading-[0.8] uppercase tracking-tighter text-stark-white mix-blend-difference"
-          >
-            WORLD<br/>CUP <span className="text-neon-green">26</span>
-          </motion.h1>
-        </div>
-        
-        <div className="flex flex-col gap-6 w-full max-w-md">
+      <header className="mb-10 md:mb-20 flex flex-col gap-5 relative z-10">
+        <h1 className="font-display text-[4.5rem] sm:text-8xl md:text-9xl lg:text-[12rem] leading-[0.85] uppercase tracking-tighter text-stark-white">
+          WORLD<br/>CUP <span className="text-neon-green">26</span>
+        </h1>
+
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
           {/* SEARCH BAR */}
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-neon-green transition-colors" size={20} />
+          <div className="relative group flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-neon-green transition-colors" size={16} />
             <input 
               type="text"
-              placeholder="SEARCH TEAM OR MATCH..."
+              placeholder="SEARCH TEAM..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 p-4 pl-12 font-body text-sm font-bold tracking-widest text-stark-white placeholder:text-white/20 focus:outline-none focus:border-neon-green/50 transition-all uppercase"
+              className="w-full bg-white/5 border border-white/10 p-3 pl-10 font-body text-xs font-bold tracking-widest text-stark-white placeholder:text-white/20 focus:outline-none focus:border-neon-green/50 transition-all uppercase"
             />
           </div>
 
           {/* FILTER PILLS */}
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-1.5 flex-wrap">
             {[
               { id: "ALL", label: "ALL", icon: Calendar },
               { id: "IN_PLAY", label: "LIVE", icon: PlayCircle },
-              { id: "TIMED", label: "SCHEDULED", icon: Calendar },
-              { id: "FINISHED", label: "FINISHED", icon: Calendar },
+              { id: "TIMED", label: "SCH", icon: Calendar },
+              { id: "FINISHED", label: "FT", icon: Calendar },
             ].map((pill) => (
               <button
                 key={pill.id}
                 onClick={() => setFilterStatus(pill.id as any)}
-                className={`flex items-center gap-2 px-4 py-2 text-[10px] font-bold tracking-tighter uppercase border transition-all ${filterStatus === pill.id ? 'bg-neon-green text-pitch-black border-neon-green' : 'bg-transparent text-white/40 border-white/10 hover:border-white/30'}`}
+                className={`flex items-center gap-1.5 px-3 py-2.5 text-[9px] font-bold tracking-tighter uppercase border transition-all whitespace-nowrap ${filterStatus === pill.id ? 'bg-neon-green text-pitch-black border-neon-green' : 'bg-transparent text-white/40 border-white/10 hover:border-white/30'}`}
               >
-                <pill.icon size={14} />
+                <pill.icon size={11} />
                 {pill.label}
               </button>
             ))}
@@ -149,23 +142,23 @@ export default function Home() {
             <p className="font-display text-2xl text-white/40 uppercase tracking-widest">No matches found</p>
           </div>
         ) : (
-          <div className="relative pl-8 md:pl-16 border-l border-white/20">
+          <div className="relative pl-6 sm:pl-10 md:pl-16 border-l border-white/20">
             {sortedDates.map((dateKey) => {
                const dateObj = new Date(dateKey);
                const formattedDate = dateObj.toLocaleDateString("en-US", { month: "short", day: "numeric" });
                const isToday = dateKey === new Date().toISOString().split("T")[0];
 
                return (
-                 <div key={dateKey} className="mb-20 relative">
+                 <div key={dateKey} className="mb-14 md:mb-20 relative">
                    {/* Timeline Node */}
-                   <div className={`absolute -left-[37px] md:-left-[69px] top-1 w-5 h-5 rounded-full border-4 border-pitch-black ${isToday ? 'bg-neon-green shadow-[0_0_15px_#ccff00]' : 'bg-white/50'}`}></div>
+                   <div className={`absolute -left-[25px] sm:-left-[29px] md:-left-[33px] top-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-4 border-pitch-black ${isToday ? 'bg-neon-green shadow-[0_0_15px_#ccff00]' : 'bg-white/50'}`}></div>
                    
                    {/* Date Header */}
-                   <div className="flex items-end gap-4 mb-8 -mt-2">
-                      <h3 className={`font-display text-4xl md:text-6xl uppercase tracking-widest ${isToday ? 'text-neon-green' : 'text-stark-white'}`}>
+                   <div className="flex items-end gap-3 mb-5 md:mb-8 -mt-1">
+                      <h3 className={`font-display text-3xl sm:text-4xl md:text-6xl uppercase tracking-widest leading-none ${isToday ? 'text-neon-green' : 'text-stark-white'}`}>
                         {formattedDate}
                       </h3>
-                      {isToday && <span className="font-body text-[10px] font-bold text-pitch-black bg-neon-green px-2 py-1 mb-2 uppercase">Today</span>}
+                      {isToday && <span className="font-body text-[9px] font-bold text-pitch-black bg-neon-green px-2 py-1 mb-1 uppercase">Today</span>}
                    </div>
                    
                    {/* Matches List */}
