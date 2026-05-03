@@ -16,9 +16,12 @@ export default function StandingsPage() {
   return (
     <main className="min-h-screen pt-24 pb-32 px-6 md:px-12 lg:px-24 max-w-[1920px] mx-auto">
       {/* Navigation */}
-      <nav className="mb-12 relative z-10">
+      <nav className="mb-12 relative z-10 flex justify-between items-center">
         <Link href="/" className="font-body text-sm font-bold tracking-widest text-white/50 uppercase hover:text-neon-green transition-colors flex items-center gap-2 w-fit">
           <span className="text-lg">←</span> BACK TO MATCHES
+        </Link>
+        <Link href="/bracket" className="font-body text-sm font-bold tracking-widest text-stark-white border border-white/20 px-4 py-2 uppercase hover:bg-white hover:text-pitch-black transition-colors w-fit">
+          VIEW BRACKET →
         </Link>
       </nav>
 

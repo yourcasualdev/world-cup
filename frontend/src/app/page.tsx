@@ -33,12 +33,17 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
-          className="font-body text-sm font-bold tracking-widest text-white/50 uppercase max-w-xs"
+          className="font-body text-sm font-bold tracking-widest text-white/50 uppercase max-w-sm"
         >
           <p className="mb-6">Real-time tournament tracking with brutal precision.</p>
-          <Link href="/standings" className="inline-block border border-neon-green/30 text-neon-green px-6 py-3 hover:bg-neon-green hover:text-pitch-black transition-all duration-300">
-            VIEW STANDINGS →
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link href="/standings" className="inline-block border border-neon-green/30 text-neon-green px-6 py-3 hover:bg-neon-green hover:text-pitch-black transition-all duration-300 text-center whitespace-nowrap">
+              STANDINGS →
+            </Link>
+            <Link href="/bracket" className="inline-block border border-white/20 text-stark-white px-6 py-3 hover:bg-white hover:text-pitch-black transition-all duration-300 text-center whitespace-nowrap">
+              BRACKET →
+            </Link>
+          </div>
         </motion.div>
       </header>
 
