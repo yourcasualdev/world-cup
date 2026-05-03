@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   description: "Gerçek zamanlı Dünya Kupası takip ekranı.",
 };
 
+import MobileNav from "@/components/navigation/MobileNav";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,6 +35,7 @@ export default function RootLayout({
       >
         <div className="noise-bg pointer-events-none fixed inset-0 z-50 opacity-20 mix-blend-overlay"></div>
         {children}
+        <MobileNav />
       </body>
     </html>
   );
