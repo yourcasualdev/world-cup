@@ -62,6 +62,16 @@ services:
     networks:
       - worldcup_network
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: worldcup_tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    depends_on:
+      - frontend
+    networks:
+      - worldcup_network
+
 volumes:
   postgres_data:
   redis_data:
