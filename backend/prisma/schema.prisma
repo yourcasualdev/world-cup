@@ -20,6 +20,7 @@ model Team {
   id        String     @id @default(uuid())
   extApiId  Int?       @unique // ID from external API (football-data or api-football)
   name      String
+  tla       String?
   flagUrl   String?
   groupId   String?
   group     Group?     @relation(fields: [groupId], references: [id])

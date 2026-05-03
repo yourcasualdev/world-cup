@@ -13,22 +13,6 @@ export default function TeamsPage() {
 
   const groups: any[] = data?.data || [];
 
-  // Tüm takımları gruba göre düzleştir
-  const allTeams = groups.flatMap((group: any) =>
-    (group.standings || []).map((row: any) => ({
-      ...row.team,
-      group: group.group,
-      played: row.playedGames,
-      points: row.points,
-      won: row.won,
-      draw: row.draw,
-      lost: row.lost,
-      goalsFor: row.goalsFor,
-      goalsAgainst: row.goalsAgainst,
-      position: row.position,
-    }))
-  );
-
   return (
     <main className="min-h-screen pt-20 pb-36 px-4 sm:px-6 md:px-12 lg:px-24 max-w-[1920px] mx-auto overflow-x-hidden">
       {/* Mesh gradient background */}

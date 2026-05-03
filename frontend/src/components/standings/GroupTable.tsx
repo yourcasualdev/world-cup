@@ -13,6 +13,7 @@ interface TeamStanding {
   goalsFor: number;
   goalsAgainst: number;
   team: {
+    id: string;
     name: string;
     tla: string;
     flagUrl: string;
@@ -66,7 +67,7 @@ export default function GroupTable({ groupName, standings, index }: GroupProps) 
                 className={`grid grid-cols-[30px_1fr_30px_30px_30px] sm:grid-cols-[40px_1fr_40px_40px_40px_40px] gap-2 px-6 py-4 items-center border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors ${isTopTwo ? '' : 'opacity-60'}`}
               >
                 <div className="font-display text-xl text-white/50">{row.position}</div>
-                <Link href={`/teams/${row.teamId}`} className="flex items-center gap-3 group/team">
+                <Link href={`/teams/${row.team.id}`} className="flex items-center gap-3 group/team">
                   <img src={row.team.flagUrl} alt={row.team.name} className="w-8 h-5 object-cover transition-all duration-300" />
                   <span className="font-display text-2xl uppercase tracking-wide text-stark-white group-hover/team:text-neon-green transition-colors">{row.team.tla}</span>
                 </Link>
