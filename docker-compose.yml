@@ -13,6 +13,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - worldcup_network
 
   redis:
     image: redis:7-alpine
@@ -22,33 +24,48 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
+    networks:
+      - worldcup_network
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: worldcup_backend
     ports:
       - "8080:8080"
-    env_file:
-      - ./backend/.env
     environment:
       - DATABASE_URL=postgresql://worldcup:password123@postgres:5432/worldcup?schema=public
       - REDIS_URL=redis://redis:6379
+      - FOOTBALL_DATA_API_KEY=${FOOTBALL_DATA_API_KEY}
+      - API_FOOTBALL_KEY=${API_FOOTBALL_KEY}
+      - PORT=8080
     depends_on:
       - postgres
       - redis
     restart: unless-stopped
+    networks:
+      - worldcup_network
 
-  # frontend:
-  #   build: ./frontend
-  #   container_name: worldcup_frontend
-  #   ports:
-  #     - "3000:3000"
-  #   env_file:
-  #     - ./frontend/.env
-  #   depends_on:
-  #     - backend
-  #   restart: unless-stopped
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: worldcup_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - worldcup_network
 
 volumes:
   postgres_data:
   redis_data:
+
+networks:
+  worldcup_network:
+    driver: bridge
