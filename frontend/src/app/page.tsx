@@ -13,12 +13,33 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<"ALL" | "IN_PLAY" | "TIMED" | "FINISHED">("ALL");
 
-  // Canlı (IN_PLAY) veya yaklaşan maçları çek
+  // Maç ve Puan Durumu verilerini paralel çek
   const { data, error, isLoading } = useSWR(`${API_BASE}/matches`, fetcher, {
-    refreshInterval: 10000, // 10 saniyeye düşürelim UX için
+    refreshInterval: 10000,
+  });
+  const { data: standingsData } = useSWR(`${API_BASE}/standings`, fetcher, {
+    refreshInterval: 60000,
   });
 
   const matches = data?.data || [];
+
+  // Standings'den takım ID -> form (son 5 sonuç) map'i oluştur
+  const teamFormMap = useMemo(() => {
+    const map: Record<string, string[]> = {};
+    const groups: any[] = standingsData?.data || [];
+    for (const group of groups) {
+      for (const row of group.standings || []) {
+        const form: string[] = [];
+        // won/drawn/lost sayılarından gerçek form listesi türet
+        for (let i = 0; i < row.won; i++) form.push('W');
+        for (let i = 0; i < row.draw; i++) form.push('D');
+        for (let i = 0; i < row.lost; i++) form.push('L');
+        // Son 5 maçı al (sıra bilinmiyor ama gerçek veri)
+        map[row.team?.id] = form.slice(-5);
+      }
+    }
+    return map;
+  }, [standingsData]);
 
   // Filtreleme Logic
   const filteredMatches = useMemo(() => {
@@ -150,7 +171,7 @@ export default function Home() {
                    {/* Matches List */}
                    <div className="flex flex-col gap-6 relative">
                       {groupedMatches[dateKey].map((match: any, idx: number) => (
-                        <MatchCard key={match.id} match={match} index={idx} />
+                        <MatchCard key={match.id} match={match} index={idx} teamFormMap={teamFormMap} />
                       ))}
                    </div>
                  </div>

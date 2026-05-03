@@ -17,13 +17,14 @@ interface MatchProps {
     homeScore: number | null;
     awayScore: number | null;
     stage: string;
-    homeTeam: Team;
-    awayTeam: Team;
+    homeTeam: Team & { id: string };
+    awayTeam: Team & { id: string };
   };
   index: number;
+  teamFormMap?: Record<string, string[]>;
 }
 
-export default function MatchCard({ match, index }: MatchProps) {
+export default function MatchCard({ match, index, teamFormMap = {} }: MatchProps) {
   const isLive = match.status === "IN_PLAY";
   const date = new Date(match.matchDate);
   const timeString = date.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
@@ -74,12 +75,18 @@ export default function MatchCard({ match, index }: MatchProps) {
           <Link href={`/teams/${match.homeTeam.id}`} className="flex items-center gap-4 group/team">
             <div className="relative">
               <img src={match.homeTeam.flagUrl} alt={match.homeTeam.name} className="w-10 h-6 object-cover border border-white/10 group-hover/team:border-neon-green/50 transition-colors" />
-              {/* MINI FORM (Hover Only) */}
-              <div className="absolute -top-10 left-0 flex gap-1 opacity-0 group-hover/team:opacity-100 transition-all duration-300 translate-y-2 group-hover/team:translate-y-0">
-                {['W', 'W', 'D', 'L', 'W'].map((s, i) => (
-                  <span key={i} className={`w-4 h-4 flex items-center justify-center text-[8px] font-bold text-pitch-black ${s === 'W' ? 'bg-neon-green' : s === 'L' ? 'bg-red-500' : 'bg-white/40'}`}>{s}</span>
-                ))}
-              </div>
+              {/* MINI FORM (Hover Only - Gerçek Veri) */}
+              {(() => {
+                const form = teamFormMap[match.homeTeam.id] || [];
+                if (form.length === 0) return null;
+                return (
+                  <div className="absolute -top-10 left-0 flex gap-1 opacity-0 group-hover/team:opacity-100 transition-all duration-300 translate-y-2 group-hover/team:translate-y-0">
+                    {form.map((s, i) => (
+                      <span key={i} className={`w-4 h-4 flex items-center justify-center text-[8px] font-bold text-pitch-black ${s === 'W' ? 'bg-neon-green' : s === 'L' ? 'bg-red-500' : 'bg-white/40'}`}>{s}</span>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
             <span className={`font-display text-4xl sm:text-5xl lg:text-6xl uppercase tracking-tight transition-all duration-300 group-hover/team:text-neon-green group-hover/team:translate-x-2 ${homeWon ? 'text-stark-white' : 'text-white/70'}`}>
               {match.homeTeam.tla}
@@ -95,12 +102,18 @@ export default function MatchCard({ match, index }: MatchProps) {
           <Link href={`/teams/${match.awayTeam.id}`} className="flex items-center gap-4 group/team">
             <div className="relative">
               <img src={match.awayTeam.flagUrl} alt={match.awayTeam.name} className="w-10 h-6 object-cover border border-white/10 group-hover/team:border-neon-green/50 transition-colors" />
-              {/* MINI FORM (Hover Only) */}
-              <div className="absolute -bottom-10 left-0 flex gap-1 opacity-0 group-hover/team:opacity-100 transition-all duration-300 -translate-y-2 group-hover/team:translate-y-0">
-                {['D', 'L', 'W', 'W', 'D'].map((s, i) => (
-                  <span key={i} className={`w-4 h-4 flex items-center justify-center text-[8px] font-bold text-pitch-black ${s === 'W' ? 'bg-neon-green' : s === 'L' ? 'bg-red-500' : 'bg-white/40'}`}>{s}</span>
-                ))}
-              </div>
+              {/* MINI FORM (Hover Only - Gerçek Veri) */}
+              {(() => {
+                const form = teamFormMap[match.awayTeam.id] || [];
+                if (form.length === 0) return null;
+                return (
+                  <div className="absolute -bottom-10 left-0 flex gap-1 opacity-0 group-hover/team:opacity-100 transition-all duration-300 -translate-y-2 group-hover/team:translate-y-0">
+                    {form.map((s, i) => (
+                      <span key={i} className={`w-4 h-4 flex items-center justify-center text-[8px] font-bold text-pitch-black ${s === 'W' ? 'bg-neon-green' : s === 'L' ? 'bg-red-500' : 'bg-white/40'}`}>{s}</span>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
             <span className={`font-display text-4xl sm:text-5xl lg:text-6xl uppercase tracking-tight transition-all duration-300 group-hover/team:text-neon-green group-hover/team:translate-x-2 ${awayWon ? 'text-stark-white' : 'text-white/70'}`}>
               {match.awayTeam.tla}
