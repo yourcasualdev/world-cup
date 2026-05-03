@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Group {
+  id        String     @id @default(uuid())
+  name      String     @unique // e.g. "Group A"
+  teams     Team[]
+  standings Standing[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Team {
+  id        String     @id @default(uuid())
+  extApiId  Int?       @unique // ID from external API (football-data or api-football)
+  name      String
+  flagUrl   String?
+  groupId   String?
+  group     Group?     @relation(fields: [groupId], references: [id])
+  homeMatches Match[]  @relation("HomeTeam")
+  awayMatches Match[]  @relation("AwayTeam")
+  standings Standing[]
+  players   Player[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Player {
+  id        String   @id @default(uuid())
+  extApiId  Int?     @unique
+  name      String
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+  position  String?
+  shirtNum  Int?
+  age       Int?
+  photoUrl  String?
+  stats     Stat[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Venue {
+  id        String   @id @default(uuid())
+  extApiId  Int?     @unique
+  name      String
+  city      String
+  capacity  Int?
+  photoUrl  String?
+  matches   Match[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Match {
+  id          String   @id @default(uuid())
+  extApiId    Int?     @unique
+  homeTeamId  String
+  homeTeam    Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId  String
+  awayTeam    Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  venueId     String?
+  venue       Venue?   @relation(fields: [venueId], references: [id])
+  matchDate   DateTime
+  status      String   @default("SCHEDULED") // SCHEDULED, LIVE, FINISHED, POSTPONED
+  homeScore   Int?
+  awayScore   Int?
+  stage       String   // e.g. "GROUP_STAGE", "ROUND_OF_32", "FINAL"
+  matchday    Int?     // e.g. 1, 2, 3
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Standing {
+  id           String   @id @default(uuid())
+  groupId      String
+  group        Group    @relation(fields: [groupId], references: [id])
+  teamId       String
+  team         Team     @relation(fields: [teamId], references: [id])
+  playedGames  Int      @default(0)
+  won          Int      @default(0)
+  draw         Int      @default(0)
+  lost         Int      @default(0)
+  goalsFor     Int      @default(0)
+  goalsAgainst Int      @default(0)
+  points       Int      @default(0)
+  position     Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([groupId, teamId])
+}
+
+model Stat {
+  id          String   @id @default(uuid())
+  playerId    String
+  player      Player   @relation(fields: [playerId], references: [id])
+  goals       Int      @default(0)
+  assists     Int      @default(0)
+  yellowCards Int      @default(0)
+  redCards    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([playerId])
+}
