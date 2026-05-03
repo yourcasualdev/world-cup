@@ -69,7 +69,7 @@ export default function MatchCard({ match, index }: MatchProps) {
         {/* Home Team */}
         <div className="flex items-center justify-between">
           <Link href={`/teams/${match.homeTeam.id}`} className="flex items-center gap-4 group/team">
-            <img src={match.homeTeam.flagUrl} alt={match.homeTeam.name} className="w-12 h-8 object-cover grayscale group-hover/team:grayscale-0 transition-all duration-500" />
+            <img src={match.homeTeam.flagUrl} alt={match.homeTeam.name} className="w-12 h-8 object-cover transition-all duration-500" />
             <span className="font-display text-4xl sm:text-5xl lg:text-6xl uppercase tracking-tight text-stark-white group-hover/team:text-neon-green transition-colors duration-300">
               {match.homeTeam.tla}
             </span>
@@ -82,7 +82,7 @@ export default function MatchCard({ match, index }: MatchProps) {
         {/* Away Team */}
         <div className="flex items-center justify-between">
           <Link href={`/teams/${match.awayTeam.id}`} className="flex items-center gap-4 group/team">
-            <img src={match.awayTeam.flagUrl} alt={match.awayTeam.name} className="w-12 h-8 object-cover grayscale group-hover/team:grayscale-0 transition-all duration-500" />
+            <img src={match.awayTeam.flagUrl} alt={match.awayTeam.name} className="w-12 h-8 object-cover transition-all duration-500" />
             <span className="font-display text-4xl sm:text-5xl lg:text-6xl uppercase tracking-tight text-stark-white group-hover/team:text-neon-green transition-colors duration-300">
               {match.awayTeam.tla}
             </span>

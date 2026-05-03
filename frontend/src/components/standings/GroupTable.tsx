@@ -67,7 +67,7 @@ export default function GroupTable({ groupName, standings, index }: GroupProps) 
               >
                 <div className="font-display text-xl text-white/50">{row.position}</div>
                 <Link href={`/teams/${row.teamId}`} className="flex items-center gap-3 group/team">
-                  <img src={row.team.flagUrl} alt={row.team.name} className="w-8 h-5 object-cover grayscale group-hover/team:grayscale-0 transition-all duration-300" />
+                  <img src={row.team.flagUrl} alt={row.team.name} className="w-8 h-5 object-cover transition-all duration-300" />
                   <span className="font-display text-2xl uppercase tracking-wide text-stark-white group-hover/team:text-neon-green transition-colors">{row.team.tla}</span>
                 </Link>
                 <div className="text-center font-body text-sm font-semibold text-white/70">{row.playedGames}</div>

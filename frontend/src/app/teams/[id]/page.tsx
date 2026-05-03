@@ -45,7 +45,7 @@ export default function TeamDetailPage() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             src={team.flagUrl} 
             alt={team.name} 
-            className="w-32 md:w-48 xl:w-64 aspect-[3/2] object-cover grayscale opacity-80"
+            className="w-32 md:w-48 xl:w-64 aspect-[3/2] object-cover opacity-90"
           />
           <div className="flex flex-col">
             <motion.h1 
@@ -106,7 +106,7 @@ export default function TeamDetailPage() {
                   <img 
                     src={player.photoUrl || `https://ui-avatars.com/api/?name=${player.name}&background=111111&color=ffffff&size=256`} 
                     alt={player.name} 
-                    className="w-full h-full object-contain object-bottom grayscale group-hover:grayscale-0 transition-all duration-500 opacity-60 group-hover:opacity-100"
+                    className="w-full h-full object-contain object-bottom transition-all duration-500 opacity-60 group-hover:opacity-100"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-pitch-black-light via-pitch-black-light/50 to-transparent"></div>
                 </div>
