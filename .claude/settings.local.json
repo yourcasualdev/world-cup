@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($env:PATH = $env:PATH + \";C:\\\\Program Files\\\\Docker\\\\Docker\\\\resources\\\\bin\"; docker compose -f \"c:\\\\Users\\\\dilge\\\\OneDrive\\\\Masaüstü\\\\world-cup\\\\docker-compose.yml\" ps)",
+      "Bash(\"C:\\\\Program Files\\\\Docker\\\\Docker\\\\resources\\\\bin\\\\docker.exe\" compose restart frontend)"
+    ]
+  }
+}

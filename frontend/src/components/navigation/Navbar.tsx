@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
+
+const TrophyModel = dynamic(() => import("./TrophyModel"), { ssr: false });
 
 const navItems = [
   { name: "Matches", href: "/" },
@@ -15,10 +18,11 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[90] glass-brutalism border-b border-white/10">
+    <header className="fixed top-0 left-0 right-0 z-[90] liquid-glass">
       <div className="max-w-[1920px] mx-auto px-6 md:px-12 lg:px-24 flex items-center justify-between h-16">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" className="flex items-center gap-2 group">
+          <TrophyModel />
           <span className="font-display text-2xl tracking-tighter text-stark-white group-hover:text-neon-green transition-colors">
             WC<span className="text-neon-green">26</span>
           </span>

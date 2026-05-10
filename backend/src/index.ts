@@ -12,7 +12,7 @@ const port = process.env.PORT || 8080;
 const prisma = new PrismaClient();
 
 app.use(cors({
-  origin: ['https://worldcup.yourcasual.dev', 'https://api-worldcup.yourcasual.dev'],
+  origin: ['https://worldcup.yourcasual.dev', 'https://api-worldcup.yourcasual.dev', 'http://localhost:3000', 'http://localhost:8080'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
